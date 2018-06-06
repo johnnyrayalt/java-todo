@@ -1,10 +1,14 @@
 package models;
 
+import dao.Sql2oTaskDao;
 import org.junit.Test;
 import java.time.LocalDateTime;
 import static org.junit.Assert.*;
 
 public class TaskTest {
+
+    private Sql2oTaskDao taskDao;
+
     @Test
     public void NewTaskObjectGetsCorrectlyCreated_true() throws Exception {
         Task task = setupNewTask();
@@ -29,8 +33,16 @@ public class TaskTest {
         assertEquals(LocalDateTime.now().getDayOfWeek(), task.getCreatedAt().getDayOfWeek());
     }
 
+    @Test
+    public void addingTaskSetsId() throws Exception {
+        Task task = setupNewTask();
+        int originalTaskId = task.getId();
+        taskDao.add(task);
+        assertNotEquals(originalTaskId, task.getId());
+    }
+
     //helper methods
     public Task setupNewTask(){
-        return new Task("Mow the lawn");
+        return new Task("Mow the lawn", 1);
     }
 }

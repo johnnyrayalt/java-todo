@@ -9,7 +9,6 @@ import static org.junit.Assert.*;
 public class Sql2oTaskDaoTest {
     private Sql2oTaskDao taskDao;
     private Connection conn;
-
     @Before
     public void setUp() throws Exception {
         String connectionString = "jdbc:h2:mem:testing;INIT=RUNSCRIPT from 'classpath:db/create.sql'";
@@ -20,7 +19,7 @@ public class Sql2oTaskDaoTest {
 
     @Test
     public void addingCourseSetsId() throws Exception {
-        Task task = new Task("mow the lawn");
+        Task task = new Task("mow the lawn", 1);
         int originalTaskId = task.getId();
         taskDao.add(task);
         assertNotEquals(originalTaskId, task.getId());
@@ -28,7 +27,7 @@ public class Sql2oTaskDaoTest {
 
     @Test
     public void existingTasksCanBeFoundById() throws Exception {
-        Task task = new Task("Mow the lawn");
+        Task task = new Task("Mow the lawn", 1);
         taskDao.add(task);
         Task foundTask = taskDao.findById(task.getId());
         assertEquals(task, foundTask);
@@ -36,9 +35,9 @@ public class Sql2oTaskDaoTest {
 
     @Test
     public void getAllCorrectlyGetsAll() throws Exception {
-        Task task = new Task("mow the lawn");
+        Task task = new Task("mow the lawn", 1);
         taskDao.add(task);
-        Task task2 = new Task("do the dishes");
+        Task task2 = new Task("do the dishes", 2);
         taskDao.add(task2);
         assertEquals(2, taskDao.getAll().size());
     }
@@ -50,16 +49,16 @@ public class Sql2oTaskDaoTest {
 
     @Test
     public void updateUpdatesCorrectly() throws Exception {
-        Task task = new Task("mow the lawn");
+        Task task = new Task("mow the lawn", 1);
         taskDao.add(task);
-        taskDao.update(task.getId(), "do the dishes");
+        taskDao.update(task.getId(),"do the dishes", 1);
         Task updatedTask = taskDao.findById(task.getId());
         assertEquals("do the dishes", updatedTask.getDescription());
     }
 
     @Test
     public void deleteDeletesTaskCorrectly() throws Exception {
-        Task task = new Task("mow the lawn");
+        Task task = new Task("mow the lawn", 1);
         taskDao.add(task);
         taskDao.deleteById(task.getId());
         assertEquals(0, taskDao.getAll().size());
@@ -67,8 +66,8 @@ public class Sql2oTaskDaoTest {
 
     @Test
     public void clearAllTasks_clearsAllTasks() throws Exception {
-        Task task1 = new Task("mow the lawn");
-        Task task2 = new Task("do the dishes");
+        Task task1 = new Task("mow the lawn", 1);
+        Task task2 = new Task("do the dishes", 2);
         taskDao.add(task1);
         taskDao.add(task2);
         taskDao.clearAllTasks();
